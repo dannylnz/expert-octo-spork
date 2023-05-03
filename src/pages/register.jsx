@@ -9,7 +9,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>Sign Up - Pocket</title>
+        <title>Sign Up - Octo</title>
       </Head>
       <AuthLayout
         title="Sign up for an account"
