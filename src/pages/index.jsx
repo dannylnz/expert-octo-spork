@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Octo.</title>
+        <title>OctoSKDKDKS.</title>
         <meta
           name="description"
           content="By leveraging insights from our network of 
