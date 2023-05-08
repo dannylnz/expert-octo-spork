@@ -10,7 +10,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const { question, history } = req.body;
-
+  console.log("chat handler")
   console.log('question', question);
 
   //only accept post requests

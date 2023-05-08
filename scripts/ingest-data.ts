@@ -5,10 +5,21 @@ import { pinecone } from '@/utils/pinecone-client';
 import { CustomPDFLoader } from '@/utils/customPDFLoader';
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
 //import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
-import { TextLoader } from 'langchain/document_loaders/fs/text';
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { S3Loader } from "langchain/document_loaders/web/s3";
+
+// AWS S3 Bucket loader
+const loader = new S3Loader({
+  bucket: "talkingpdf",
+  key: "Eparina_2017_11_29_Web.pdf",
+  unstructuredAPIURL: "http://localhost:8000/general/v0/general",
+});
 
 /* Name of directory to retrieve your files from */
-const filePath = 'docs/ludo_test.txt';
+const filePathFromScript = process.argv[3]
+console.log("file path from script: ", filePathFromScript)
+const filePath = filePathFromScript;
+
 
 export const run = async () => {
   try {
@@ -16,10 +27,11 @@ export const run = async () => {
     // const directoryLoader = new DirectoryLoader(filePath, {
     //   '.pdf': (path) => new CustomPDFLoader(path),
     // });
-
-    const textLoader = new TextLoader(filePath)
-    // const loader = new PDFLoader(filePath);
-    const rawDocs = await textLoader.load();
+    console.log(filePath)
+    const textLoader = new CustomPDFLoader(filePath)
+     const loader = new PDFLoader(filePath);
+    //const docsS3 = await loader.load();
+   const rawDocs = await textLoader.load();
 
     /* Split text into chunks */
     const textSplitter = new RecursiveCharacterTextSplitter({

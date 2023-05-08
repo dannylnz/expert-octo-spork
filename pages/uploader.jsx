@@ -1,9 +1,29 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { AuthLayout } from '@/components/AuthLayout'
 import { Button } from '@/components/Button'
+import { useState } from 'react'
+import axios from 'axios'
 
 
 export default function uploader() {
+  const [selectedFile, setSelectedFile] = useState()
+  const [uploading, setUploading] = useState(false)
+
+  const uploadHandler = async () => {
+    try{
+      if(!selectedFile) return;
+      setUploading(true)
+      const formData = new FormData();
+      formData.append("myFile", selectedFile);
+      const {data} = await axios.post("/api/uploader", formData);
+      console.log(data);
+    }
+    catch(error){
+      console.log(error.response?.data)
+    }
+    setUploading(false)
+  }
+
   return (
     <AuthLayout>
     <form>
@@ -28,8 +48,14 @@ export default function uploader() {
                       htmlFor="file-upload"
                       className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                     >
-                      <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                      <span>select a file</span>
+                      <input onChange={({target}) => {
+                        if(target.files){
+                          const file = target.files[0]
+                          setSelectedFile(file);
+                        }
+                      }} 
+                      id="file-upload" name="file-upload" type="file" className="sr-only" />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
@@ -45,6 +71,14 @@ export default function uploader() {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
           Cancel
+        </button>
+        <button 
+          type="button"
+          className="text-sm font-semibold leading-6 text-blue-500"
+          onClick={uploadHandler}
+          disabled={uploading}
+          >
+          Upload
         </button>
         <Button href="/chatbot" className="px-4">
               Start talking with the chatbot
